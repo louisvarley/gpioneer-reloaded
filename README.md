@@ -1,4 +1,6 @@
-GPioneer has been deprecated in favor of [GPIOnext](https://github.com/mholgatem/GPIOnext)
+Having tried and tested [GPIOnext](https://github.com/mholgatem/GPIOnext) many times by mholgatem i found i had the least problems and highiest reliablity using gpioneer. This is gpioneer-reloaded. 
+
+My continued developed of gpioneer base code adding new features
 
 <h1>GPioneer</h1>
 <h6>A Python Based GPIO Controller</h6>This is a GPIO controller that is fully compatible with RetroPie (and PiPlay). For anyone that is familiar with Adafruit's RetroGame Utility, this is very similar. The main difference being that this is user friendly and full featured.
