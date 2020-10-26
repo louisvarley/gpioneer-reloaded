@@ -18,7 +18,7 @@ All Handled through a web interface allowing configuration and changes without n
 ### Whats New?
 - [x] Original Project Renamed
 - [x] Add Blocking Pin feature to web and code
-- [x] Remove piplay intergration (why)
+- [x] Remove piplay intergration (legacy product)
 - [ ] All code to Python3
 - [ ] Updated Installation process
 - [x] New web interface look and feel and functionality
