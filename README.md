@@ -8,7 +8,7 @@ GPIOneer-Reloaded is my attempt at further developing the GPIOneer code base to 
 
 ## What is it?
 
-GPIOneer-reloaded is a very simple service to help you may GPIO Pins to Keyboard Keys and System Commands. 
+GPIOneer-reloaded is a very simple service, designed to help you map GPIO Pins to Keyboard Keys and System Commands. 
 
 If you are building your own RetroPie arcade machine, handheld etc and are not using a USB controller, you may have your own buttons mapped to GPIO pins. 
 Once installed, you can use GPIOneer-reloaded to quickly and easily identify the pins used, assign a key or command to them, and have the service automatically handle these from boot for you. 
