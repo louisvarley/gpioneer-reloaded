@@ -1,8 +1,8 @@
 ## GPIOneer Reloaded
 
-GPIOneed Reloaded is a continuation of the GPIO Controller  [GPIOneer](https://github.com/mholgatem/gpioneer) created by mholgatem. 
+GPIOneed Reloaded is a continuation of the GPIO Controller [GPIOneer](https://github.com/mholgatem/gpioneer) created by mholgatem. 
 
-[GPIOnext](https://github.com/mholgatem/GPIOnext) was created as a sucessor to GPIOneer however. Personally i found GPIOnext much harder to install, to configure and less reliable. Going back to GPIOneer again and again for it's simplicity and useful web interface. 
+[GPIOnext](https://github.com/mholgatem/GPIOnext) was created as a sucessor to [GPIOneer](https://github.com/mholgatem/gpioneer) however. Personally i found [GPIOnext](https://github.com/mholgatem/GPIOnext) much harder to install, to configure and less reliable. Going back to [GPIOneer](https://github.com/mholgatem/gpioneer) again and again for it's simplicity and useful web interface. 
 
 GPIOneer-Reloaded is my attempt at further developing the GPIOneer code base to add new features and provide updates for better longevity. 
 
