@@ -1,0 +1,13 @@
+[Unit]
+Description=gpioneer-reloaded-web
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/gpioneer-reloaded/web
+ExecStart=/usr/bin/python -u gpioneer-reloaded-web.py
+Restart=always
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

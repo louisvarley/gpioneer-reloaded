@@ -99,9 +99,14 @@ def pcolor(color, string):
 #--------------------------- BUTTON OBJECT -------------------------------------
 #-------------------------------------------------------------------------------
 class button(object):
-    def __init__(self, name, pin, commands):
+    def __init__(self, name, pin, commands, block):
         self.name = name
         self.pin = eval(pin + ',')
+        
+        if(block):
+            self.block = eval(block + ',')
+        else:
+            self.block = None
         self.is_combo = True if len(self.pin) > 1 else False
         self.time_stamp = 0
         self.pressed = 0
@@ -139,6 +144,10 @@ class Gpioneer (object):
     REV2_PIN_LIST = [3,5,7,11,13,15,19,21,23,29,31,33,35,37,
                                 8,10,12,16,18,22,24,26,32,36,38,40] 
     
+    
+    buttons_active = []
+    button_map = {}
+    bit_block = []
     
     def signal_handler(self, signal, frame):
         DEBUG("Shutting down. Received signal {0}".format(signal))
@@ -230,7 +239,7 @@ class Gpioneer (object):
         #use current folder if piplay not installed
         if not os.path.isdir(self.DATABASE_PATH):
             temp = os.path.realpath(os.path.dirname(sys.argv[0]))
-            self.DATABASE_PATH = os.path.join(temp,'web-frontend/')
+            self.DATABASE_PATH = os.path.join(temp,'web/')
         DEBUG("Database path: {0}".format(self.DATABASE_PATH))
         
         DEBUG("Initializing DATABASE")
@@ -241,7 +250,7 @@ class Gpioneer (object):
         #Create database table
         query = ' '.join(['CREATE TABLE IF NOT EXISTS gpioneer', 
                         '(id INTEGER PRIMARY KEY AUTOINCREMENT',
-                        'UNIQUE, name TEXT UNIQUE, command TEXT, pins TEXT)'])
+                        'UNIQUE, name TEXT UNIQUE, command TEXT, pins TEXT, block TEXT)'])
         self.CC.execute(query)
         self.CONFIG.commit()
         
@@ -278,7 +287,7 @@ class Gpioneer (object):
 
         self.bitMask = 0L
         self.update = False
-        query = 'SELECT name, pins, command FROM gpioneer'
+        query = 'SELECT name, pins, command, block FROM gpioneer'
         temp = self.CC.execute(query).fetchall()
         self.button_map = {}
         
@@ -289,7 +298,7 @@ class Gpioneer (object):
             print 'No pins set! Please run configuration! sudo python Gpioneer -c'
             sys.exit()
         for entry in temp:
-            temp_button = button(entry[0], entry[1], entry[2])
+            temp_button = button(entry[0], entry[1], entry[2], entry[3])
             if temp_button.mask in self.button_map:
                 self.button_map[temp_button.mask].append(entry[2])
             else:
@@ -322,7 +331,7 @@ class Gpioneer (object):
     #-------------------------- MAIN FUNCTIONS ---------------------------------
     #---------------------------------------------------------------------------
     def button_pressed(self, channel, wait = 0.02):
-        time.sleep(wait)
+        time.sleep(wait)    
         #22 = pressed
         #LOW->0 + PULLUP->22 = 22
         #HIGH->1 + PULLDOWN->21 = 22
@@ -331,14 +340,40 @@ class Gpioneer (object):
     
     def set_bitmask(self, channel):
         bit = (1L << channel)
+
+        emit = True
         if self.button_pressed(channel, self.POLL_RATE):
+
+            #Loops all other active pins
+            for x in range(len(self.buttons_active)):
+            
+                #Loop all maps
+                for y in range(len(self.button_map)):
+                
+                    #If this is an active button
+                    if(self.buttons_active[x] in self.button_map[y].pin):
+                    
+                        #If this active button has a blocking pin on our pressed channel
+                        if(self.button_map[y].block != None):
+                            if(channel in self.button_map[y].block):
+                                self.bit_block.append(bit)
+                          
+            self.buttons_active.append(channel)
             self.bitMask |= bit #add channel
+
         else:
+            if(channel in self.buttons_active):
+                self.buttons_active.remove(channel)
+                
+            if(bit in self.bit_block):
+                self.bit_block.remove(bit)               
             self.bitMask &= ~(bit) #remove channel
             self.update = True
+
         
         
     def emit_key(self, keys, value):
+
         for key in keys:
             self.ui.write(e.EV_KEY, eval(key), value)
             time.sleep(self.KEY_DELAY)
@@ -348,13 +383,13 @@ class Gpioneer (object):
             subprocess.Popen(command, shell=True)
             time.sleep(self.KEY_DELAY)
             
-            
-            
     def compare_bitmask(self):
         currentMask = 0L
         current_time = time.time()
         for b in self.button_map:
             if (self.bitMask & b.mask) == b.mask:
+                if(b.mask in self.bit_block):
+                    return                 
                 if not b.time_stamp: b.time_stamp = current_time
                 if not (currentMask & b.mask) == b.mask:
                     currentMask |= b.mask
@@ -380,10 +415,9 @@ class Gpioneer (object):
     def main(self):
         self.bitMask = 0L
         self.update = False
-        query = 'SELECT name, pins, command FROM gpioneer'
+        query = 'SELECT name, pins, command, block FROM gpioneer'
         temp = self.CC.execute(query).fetchall()
-        self.button_map = {}
-        
+
         #Create list of commands for each button
         #if same button assigned to multiple commands
         #we will iterate over each command/key
@@ -391,7 +425,7 @@ class Gpioneer (object):
             print 'No pins set! Please run configuration! sudo python Gpioneer -c'
             sys.exit()
         for entry in temp:
-            temp_button = button(entry[0], entry[1], entry[2])
+            temp_button = button(entry[0], entry[1], entry[2], entry[3])
             if temp_button.mask in self.button_map:
                 self.button_map[temp_button.mask].append(entry[2])
             else:

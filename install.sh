@@ -37,18 +37,15 @@ sudo apt-get -y install sqlite3
 sudo pip install flask flask-sqlalchemy flask-admin evdev
 sudo pip install evdev --upgrade
 
-#add gpioneer.service to systemd
-file1=$SCRIPTPATH"/gpioneer.service"
+#add gpioneer-reloaded.service to systemd
+file1=$SCRIPTPATH"/gpioneer-reloaded.service"
 cp $file1 /lib/systemd/system/
-systemctl enable gpioneer
+systemctl enable gpioneer-reloaded
 
-#add gpioneer-web.service if piplay not found
-if ! [ -e "/home/pi/pimame/"]; then
-	file2=$SCRIPTPATH"/gpioneer-web.service"
-	cp $file2 /lib/systemd/system/
-	systemctl enable gpioneer-web
-fi
-
+#add gpioneer-reloaded-web.service to systemd
+file1=$SCRIPTPATH"/gpioneer-reloaded-web.service"
+cp $file1 /lib/systemd/system/
+systemctl enable gpioneer-reloaded-web
 
 #create Udev rule for SDL2 applications
 UDEV='SUBSYSTEM=="input", ATTRS{name}=="GPioneer", ENV{ID_INPUT_KEYBOARD}="1"'
@@ -57,37 +54,6 @@ echo $UDEV > /etc/udev/rules.d/10-GPioneer.rules
 if ! grep --quiet "uinput" /etc/modules; then echo "uinput" >> /etc/modules; fi
 #add evdev to modules if not already there
 if ! grep --quiet "evdev" /etc/modules; then echo "evdev" >> /etc/modules; fi
-
-#add to piplay web app if present
-file="/home/pi/pimame/pimame-web-frontend/app.py"
-if [ -e $file ]; then
-if ! grep --quiet "GPioneer" $file; then
-echo "Patching Piplay Web-Frontend"
-match="import os"
-insert="import subprocess"
-file="/home/pi/pimame/pimame-web-frontend/app.py"
-sed -i "s@$match@$match\n$insert@" $file
-match="db.create_scoped_session()"
-insert="class GPioneer(db.Model):\n\
-    __tablename__ = 'gpioneer'\n\
-    __bind_key__ = 'config'\n\
-    id = db.Column(db.Integer, primary_key=True)\n\
-    name = db.Column(db.Text)\n\
-    command = db.Column(db.Text)\n\
-    pins = db.Column(db.Text)\n\
-\n\
-    def __unicode__(self):\n\
-        return self.name"
-file="/home/pi/pimame/pimame-web-frontend/app.py"
-sed -i "s|$match|$match\n\n\n$insert|" $file
-match="admin.add_view(CustomModelView(LocalRoms, db.session))"
-insert="if subprocess.check_output('/sbin/udevadm info --export-db | grep -i gpioneer; exit 0', stderr=subprocess.STDOUT, shell=True):\n\
-    admin.add_view(CustomModelView(GPioneer, db.session))"
-file="/home/pi/pimame/pimame-web-frontend/app.py"
-sed -i "s@$match@$match\n$insert@" $file
-fi
-sudo supervisorctl reload
-fi
 
 # remove retrogame
 file1="/etc/rc.local"
@@ -124,8 +90,7 @@ sudo python GPioneer.py -c
 clear
 fi
 systemctl daemon-reload
-systemctl start gpioneer
-systemctl start gpioneer-web
+systemctl start gpioneer-reloaded
 
 echo "-------------> Setup Complete!"
 echo 

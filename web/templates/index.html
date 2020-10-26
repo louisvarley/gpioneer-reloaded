@@ -28,7 +28,7 @@
     <div class="container">
     
     <br>
-    <h2 style="float:left;">GPioneer</h2>
+    <h2 style="float:left;">GPIOneer ReLoaded</h2>
     
     
     <a class="btn" href="/edit?id=new" style="float: right;">Add Entry</a>
@@ -57,6 +57,7 @@
                     <th class="column-header col-name">Name</th>
                     <th class="column-header col-command">Command</th>
                     <th class="column-header col-pins">Pin(s)</th>
+                    <th class="column-header col-pins">Block(s)</th>					
                     <th class="col-md-1">&nbsp;</th>
             </tr>
         </thead>
@@ -78,6 +79,7 @@
                 <td class="col-name">{{ option['name'] }}</td>
                 <td class="col-command">{{ option['command'] }}</td>
                 <td class="col-pins">{{ option['pins'] }}</td>
+				<td class="col-block">{{ option['block'] }}</td>
                 <td class="list-buttons-column">
                     <a class="icon" href="/edit?id={{ option['id'] }}" title="Edit Record">
                       <span class="fa fa-pencil glyphicon glyphicon-pencil blue-letterpress"></span>
