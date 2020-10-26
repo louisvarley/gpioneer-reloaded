@@ -6,6 +6,15 @@ GPIOneer Reloaded is a continuation of the GPIO Controller [GPIOneer](https://gi
 
 GPIOneer-Reloaded is my attempt at further developing the GPIOneer code base to add new features and provide updates for better longevity. 
 
+## What is it?
+
+GPIOneer-reloaded is a very simple service to help you may GPIO Pins to Keyboard Keys and System Commands. 
+
+If you are building your own RetroPie arcade machine, handheld etc and are not using a USB controller, you may have your own buttons mapped to GPIO pins. 
+Once installed, you can use GPIOneer-reloaded to quickly and easily identify the pins used, assign a key or command to them, and have the service automatically handle these from boot for you. 
+
+All Handled through a web interface allowing configuration and changes without needing to SSH into your box. 
+
 ### Whats New?
 - [x] Original Project Renamed
 - [x] Add Blocking Pin feature to web and code
