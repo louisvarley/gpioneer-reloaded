@@ -3,14 +3,45 @@
     <meta text/html;charset="utf-8">
 
     <!-- Bootstrap core CSS -->
-    <link href="/static/css/bootstrap.css" rel="stylesheet">
-    <link href="/static/css/main.css" rel="stylesheet">
-
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">	
+	<link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+	
+    <link href="/static/css/style.css" rel="stylesheet">
+	
     <script type='application/javascript' src="/static/jquery.min.js"></script>
-    <script type='application/javascript' src="/static/bootstrap.min.js"></script>
+	<script type='application/javascript' src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script type='application/javascript' src="/static/main.js"></script>
+	
+	<script>
+    $(function() {
+        var selectBox = $("[name='selectBox']")
+        
+        
+        //initialize
+        if(selectBox.val() == 'custom') {
+            $("[name='command']").val('');
+            $('#custom-row').show();
+        } else {
+            $("[name='command']").val(selectBox.val());
+            $('#custom-row').hide(); 
+        }
+        
+        //selection change
+        $("[name='selectBox']").change(function(){
+            if(selectBox.val() == 'custom') {
+                $("[name='command']").val('');
+                $('#custom-row').show(); 
+            } else {
+                $("[name='command']").val(selectBox.val());
+                $('#custom-row').hide(); 
+            } 
+        });
+    });
+
+</script>
 </head>
 
-<body class="schedule">
+<body>
     
     <center>
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -25,31 +56,38 @@
     {% endwith %}
     </center>
     
-    <div class="container">
+	<nav class="navbar navbar-dark bg-dark">
+		<div class="logo">
+				<img src="/static/images/logo.png">
+		</div>
+		<div class="btn-group">
+			<div onclick="edit_add_pin()" class="btn btn-primary">
+				Add Pin Action
+			</div>
+			<span style="float: right;margin: 10px;"></span>			
+			<div onclick="edit_add_pin()" class="btn btn-primary">
+				Global Options
+			</div>			
+			<span style="float: right;margin: 10px;"></span>
+			<a class="btn btn-primary" href="/logs" style="float: right;">Logs</a>
+			<span style="float: right;margin: 10px;"></span>
+			<a class="btn btn-primary" href="/logs" style="float: right;">Help</a>		
+			<span style="float: right;margin: 10px;"></span>
+			<form method="POST" action="/daemon_action">
+				<button name="daemonAction" value="{{ daemonValue }}" style="float: right;background: none!important;border:none;padding:0!important;cursor: pointer;">
+					<span class="btn btn-{% if daemonValue is equalto 'start' %}success{% endif %}{% if daemonValue is equalto 'stop' %}danger{% endif %} btn" style="float: right;">{{ daemonOption }}</span>
+				</button>
+			</form>
+		</div>
+</nav>
+	
+
+	
+	<div class="container">
     
-    <br>
-    <h2 style="float:left;">GPIOneer ReLoaded</h2>
-    
-    
-    <a class="btn" href="/edit?id=new" style="float: right;">Add Entry</a>
-    <span style="float: right;margin: 10px;"></span>
-    <a class="btn" href="/logs" style="float: right;">Logs</a>
-    <span style="float: right;margin: 10px;"></span>
-    <form method="POST" action="/web_action">
-        <button onclick="return confirm('Are you sure you want to stop the web server?\nUse: \'sudo systemctl start gpioneer-web\' (or reboot) to start it again');" style="float: right;background: none!important;border:none;padding:0!important;cursor: pointer;">
-            <span class="stop btn" style="float: right;">Stop Web Server</span>
-        </button>
-    </form>
-    <span style="float: right;margin: 10px;"></span>
-    <form method="POST" action="/daemon_action">
-        <button name="daemonAction" value="{{ daemonValue }}" style="float: right;background: none!important;border:none;padding:0!important;cursor: pointer;">
-            <span class="{{ daemonValue }} btn" style="float: right;">{{ daemonOption }}</span>
-        </button>
-    </form>
-    
-    <hr style="width:100%;">
+   
     {% if options %}
-        <table class="table table-striped table-bordered table-hover model-list blue-letterpress">
+        <table class="table table-dark table-striped">
         <thead>
             <tr>
                     
@@ -71,8 +109,10 @@
                     <form class="icon" method="POST" action="/delete">
                       <input id="id" name="id" type="hidden" value="{{ option['id'] }}">
                       <input id="url" name="url" type="hidden" value="/">
-                      <button onclick="return confirm('Are you sure you want to delete this record?');" title="Delete record">
-                        <span class="fa fa-trash glyphicon glyphicon-trash blue-letterpress"></span>
+                      <button class="btn btn-primary btn-xs" onclick="return confirm('Are you sure you want to delete this record?');" title="Delete record">
+						<span class="material-icons">
+							delete
+						</span>
                       </button>
                     </form>
                 </td>
@@ -81,9 +121,13 @@
                 <td class="col-pins">{{ option['pins'] }}</td>
 				<td class="col-block">{{ option['block'] }}</td>
                 <td class="list-buttons-column">
-                    <a class="icon" href="/edit?id={{ option['id'] }}" title="Edit Record">
-                      <span class="fa fa-pencil glyphicon glyphicon-pencil blue-letterpress"></span>
-                    </a>                    
+                   
+				<button onclick="edit_add_pin({{ option['id'] }})" class="btn btn-xs btn-primary">
+					<span class="material-icons">
+						edit
+					</span>  
+				</button>
+                                     
                 </td>
             </tr>
 
@@ -93,6 +137,26 @@
     {% endif %}
     </div>
         
+	<footer>
+	<a target="_blank" href="https://github.com/louisvarley/gpioneer-reloaded">GPIOneer Reloaded</a> 2020 By SEAL Team Ricks (Louis Varley) <br />
+	A Fork of <a href="https://github.com/mholgatem/gpioneer" target="_blank">GPIOneer</a> 2016 By mholgatem 
+	</footer>
+		
+	<div class="modal fade" id="get_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">Pin Action</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+		  </div>	 
+		</div>
+	  </div>
+	</div>		
+		
 </body>
 
 

@@ -8,6 +8,7 @@ from flask import *
 from evdev import ecodes as e
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.secret_key = 'SDF%$^HDS$%dgsVbgjthew4E5yr%4E5'
 
 abspath = os.path.abspath(__file__)
@@ -113,11 +114,11 @@ def schedule_submit():
         return redirect(url_for('schedule_form'))
  
 
-    return render_template("edit_form.html", entry=entry)
+    return
 
 def getDaemonStatus():
     try:
-        return 'active' in subprocess.check_output(['systemctl', 'is-active', 'gpioneer'])
+        return 'active' in subprocess.check_output(['systemctl', 'is-active', 'gpioneer-reloaded'])
     except:
         return False
         
@@ -125,7 +126,7 @@ def getDaemonStatus():
 @app.route('/daemon_action', methods= ['POST'])
 def setDaemonAction():
     action = request.form.get('daemonAction', 'start')
-    subprocess.call(("systemctl", action, "gpioneer"))
+    subprocess.call(("systemctl", action, "gpioneer-reloaded"))
     return redirect(url_for('schedule_form'))
     
 @app.route('/web_action', methods= ['POST'])
