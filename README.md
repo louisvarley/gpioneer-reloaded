@@ -1,37 +1,72 @@
-GPioneer has been deprecated in favor of [GPIOnext](https://github.com/mholgatem/GPIOnext)
+## GPIOneer Reloaded
 
-<h1>GPioneer</h1>
-<h6>A Python Based GPIO Controller</h6>This is a GPIO controller that is fully compatible with RetroPie (and PiPlay). For anyone that is familiar with Adafruit's RetroGame Utility, this is very similar. The main difference being that this is user friendly and full featured.
-<h4>What's New?</h4>
-<ul><li>Configuration tool to auto map buttons to keystrokes</li>
-<li>web-front end to easily modify settings/will auto integrate with piplay's web frontend</li>
-<li>supports button combinations for additional keystrokes</li>
-<li>map multiple keystrokes/commands to a single button</li>
-<li><b>It supports system commands! (you can map volume/shutdown/etc to buttons)</b></li>
-</ul>
-<h4>How to install</h4>in terminal type:
-<pre>cd ~
-git clone https://github.com/mholgatem/gpioneer.git
-bash gpioneer/install.sh</pre>
-That's it! The installer is still very much in the beta stage, so let me know if you have problems. But I have tested it on several clean raspbian/piplay images with no problem.
+GPIOneer Reloaded is a continuation of the GPIO Controller [GPIOneer](https://github.com/mholgatem/gpioneer) created by mholgatem. 
 
-<h4>How to use</h4> After the installer runs, you will be prompted to run the configuration tool. You will be prompted to press each direction twice to register the correct gpio pins (note: after registering 'up', you can skip any configuration by pressing up twice). Then you will be prompted for Exit, start, select, coin and 6 general buttons. Multiple buttons pressed in unison will register as unique button presses, so button1, button2, or button1 + button2 together are all unique.
-After running the configuration, GPioneer will automatically run in the background. You can customize any buttons or add your own custom combos by going to the web interface on a local computer (Pi's ip address / if you have piplay installed, go to the 'database admin->GPioneer' section)
+[GPIOnext](https://github.com/mholgatem/GPIOnext) was created as a sucessor to [GPIOneer](https://github.com/mholgatem/gpioneer) however. Personally i found [GPIOnext](https://github.com/mholgatem/GPIOnext) much harder to install, to configure and less reliable. Going back to [GPIOneer](https://github.com/mholgatem/gpioneer) again and again for it's simplicity and useful web interface. 
 
-If you want to assign multiple keystrokes or system commands to a single button, (in the web interface) separate them with ',' (comma).
+GPIOneer-Reloaded is my attempt at further developing the GPIOneer code base to add new features and provide updates for better longevity. 
 
-<h4>Advanced configuration</h4>
-/etc/rc.local has been modified to auto run GPioneer, add any of these flags to modify the runtime settings
+## What is it?
 
-<h6>Optional Flags</h6><ul><li>--combo_time	'Time in milliseconds to wait for combo buttons'</li>
-<li>--key_repeat	'Delay in milliseconds before key repeat'</li>
-<li>--key_delay	'Delay in milliseconds between key presses'</li>
-<li>--pins		'Comma delimited pin numbers to watch'</li>
-<li>--use_bcm		'use bcm numbering instead of board pin'</li>
-<li>--debounce	'Time in milliseconds for button debounce'</li>
-<li>--pulldown	'Use PullDown resistors instead of PullUp'</li>
-<li>--poll_rate	'Rate to poll pins after IRQ detect'</li></ul>
+GPIOneer-reloaded is a very simple service, designed to help you map GPIO Pins to Keyboard Keys and System Commands. 
 
-<h6>Configuration Flags</h6><ul><li>-c				'Configure GPioneer'</li>
-<li>--configure		'Configure GPioneer'</li>
-<li>--button_count	'Number of player buttons to configure'</li></ul>
+If you are building your own RetroPie arcade machine, handheld etc and are not using a USB controller, you may have your own buttons mapped to GPIO pins. 
+Once installed, you can use GPIOneer-reloaded to quickly and easily identify the pins used, assign a key or command to them, and have the service automatically handle these from boot for you. 
+
+All Handled through a web interface allowing configuration and changes without needing to SSH into your box. 
+
+### Whats New?
+- [x] Original Project Renamed
+- [x] Add Blocking Pin feature to web and code
+- [x] Remove piplay intergration (why)
+- [ ] All code to Python3
+- [ ] Updated Installation process
+- [x] New web interface look and feel and functionality
+- [ ] Web interface configuration manager
+- [ ] Move all saved settings to database
+- [ ] Remove terminal configuration
+- [ ] Choose alternative web interface port during install
+- [ ] Add various system commands to available pin commands
+
+### Installation
+
+    cd ~
+    git clone https://github.com/louisvarley/gpioneer-reloaded.git
+    bash gpioneer-reloaded/install.sh
+
+Follow the onscreen instructions. 
+
+### Configuration 
+
+Once installed, the installation will confirm the URL for your web interface. The Web interface is your goto place to configure your pins. 
+
+GPIOneer-reloaded as foregone any terminal based configuration for a single, easy to use, web interface. 
+
+### Web Interface
+The web interface runs on port 8080. 
+Within the Web Interface there are a number of configurations you can make including. 
+
+###### [](https://github.com/louisvarley/gpioneer-reloaded#global-options)Global Options
+-   combo_time 'Time in milliseconds to wait for combo buttons'
+-   key_repeat 'Delay in milliseconds before key repeat'
+-   key_delay 'Delay in milliseconds between key presses'
+-   debounce 'Time in milliseconds for button debounce'
+-   pulldown 'Use PullDown resistors instead of PullUp'
+-   poll_rate 'Rate to poll pins after IRQ detect'
+
+###### [](https://github.com/louisvarley/gpioneer-reloaded#global-options)Pin Options
+-   pins 'Comma delimited pin numbers to watch'
+-   command 'Key or Command do you wish to assign to this key'
+-   blocking '[see blocking pins](https://github.com/louisvarley/gpioneer-reloaded#blocking-pins)'
+
+
+#### [](https://github.com/louisvarley/gpioneer-reloaded#blocking-pins)Blocking Pins
+Blocking pins is a useful feature to address what may be a hardware issue with a software solution. 
+
+
+Blocking allows for the blocking of some button inputs while others are being held down. 
+
+**Example** using 4 buttons instead of a traditional D PAD, you wish to not allow, when pressing **DOWN** the **LEFT**, **RIGHT** and **DOWN** buttons to be registered. 
+
+To do this, each pin used for direction would have every other direction pin added to its Blocked Pins list. 
+
