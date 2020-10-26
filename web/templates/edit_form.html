@@ -6,30 +6,35 @@
 	<div class="form-group">
 		<label>Name</label>
 		<input class="form-control" type="text" name="name" onClick="this.select();" value="{{ entry.name }}" style = "width:295px;" ></input>
-		<small id="emailHelp" class="form-text text-muted">A useful name to remember what this pin is functioning as.</small>
+		<small class="form-text text-muted">A useful name to remember what this pin is functioning as.</small>
 	</div>
 	
 	<div class="form-group">
 		<label>Command</label>
-		<select name="command" class="form-control" name="selectBox">
+		<select name="command" class="selectpicker form-control" name="selectBox" data-live-search="true">
 				<option value="custom">Custom Command</option>
 			{% for option in ecodes %}
 				<option value="{{ option }}" {% if option is equalto entry.command %}selected{% endif %}>{{ option }}</option>
 			{% endfor %}
 		</select>
-		<small id="emailHelp" class="form-text text-muted">Select a key or command to execute when this pin is activated.</small>
+		<small class="form-text text-muted">Select a key or command to execute when this pin is activated.</small>
 	</div>
 
  	<div class="form-group">
 		<label>Pins</label>
+		<div class="input-group">	
 		<input class="form-control" type="text" name="pins" value="{{ entry.pins }}" style = "width:295px;" ></input>
-		<small id="emailHelp" class="form-text text-muted">What Pin (or Pins) must be activated to perform the given command.</small>
+		<div class="input-group-append">
+			<button class="btn btn-primary" type="button">Watch</button>
+		</div>
+	</div>
+		<small class="form-text text-muted">What Pin (or Pins) must be activated to perform the given command.</small>
 	</div>
 
 	<div class="form-group">
 		<label>Block Pins</label>
 		 <input class="form-control" type="text" name="block" value="{{ entry.block }}" style = "width:295px;" ></input>
-		<small id="emailHelp" class="form-text text-muted">What pins should be blocked if activated after and while this pin is active.</small>
+		<small class="form-text text-muted">What pins should be blocked if activated after and while this pin is active.</small>
 	</div>
 	
 	
