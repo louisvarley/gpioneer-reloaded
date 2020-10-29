@@ -71,3 +71,9 @@ Blocking allows for the blocking of some button inputs while others are being he
 
 To do this, each pin used for direction would have every other direction pin added to its Blocked Pins list. 
 
+
+### Screenshots
+
+![](/screenshots/1.PNG)
+![](/screenshots/2.PNG)
+![](/screenshots/3.PNG)
