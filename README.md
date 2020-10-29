@@ -20,7 +20,8 @@ All Handled through a web interface allowing configuration and changes without n
 - [x] Add Blocking Pin feature to web and code
 - [x] Remove piplay intergration (legacy product)
 - [ ] All code to Python3
-- [ ] Updated Installation process
+- [x] Web Interface can watch PIN Status (show button presses)
+- [x] Updated Installation process
 - [x] New web interface look and feel and functionality
 - [ ] Web interface configuration manager
 - [ ] Move all saved settings to database
