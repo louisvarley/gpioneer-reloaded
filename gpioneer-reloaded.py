@@ -8,6 +8,7 @@ import time
 import sqlite3
 import signal
 import subprocess
+import json
 from evdev import UInput, ecodes as e
 
 try:
@@ -360,18 +361,25 @@ class Gpioneer (object):
                           
             self.buttons_active.append(channel)
             self.bitMask |= bit #add channel
-
+            self.dump_buttons_active()
         else:
-            if(channel in self.buttons_active):
-                self.buttons_active.remove(channel)
-                
+        
+            #Remove ALL instances of the Button in buttons active, incase of duplicates
+            self.buttons_active = filter(lambda a:a is not channel, self.buttons_active)
+        
             if(bit in self.bit_block):
-                self.bit_block.remove(bit)               
+                self.bit_block.remove(bit) 
+                
             self.bitMask &= ~(bit) #remove channel
             self.update = True
+            self.dump_buttons_active()
+            
+    def dump_buttons_active(self):
+        i = json.dumps(self.buttons_active)
+        print i
+        with open('web/static/active.json', 'w') as f:
+            f.write(i)     
 
-        
-        
     def emit_key(self, keys, value):
 
         for key in keys:
